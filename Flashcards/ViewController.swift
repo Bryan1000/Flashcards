@@ -54,6 +54,11 @@ class ViewController: UIViewController {
         }
     }
     
+    func updateFlashcard(question:String, answer:String){
+        frontLabel.text = question
+        backLabel.text = answer
+    }
+    
     @IBAction func didTapOptionOne(_ sender: Any) {
         btnOptionOne.isHidden = true
     }
@@ -64,6 +69,15 @@ class ViewController: UIViewController {
     
     @IBAction func didTapOptionThree(_ sender: Any) {
         btnOptionThree.isHidden = true
+    }
+    
+    //Override func prepare(for segue: UI )
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let navigationController = segue.destination as! UINavigationController
+        
+        let creationController = navigationController.topViewController as? CreationViewController
+        
+        creationController?.flashcardsController = self
     }
 }
 
