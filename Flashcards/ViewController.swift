@@ -70,6 +70,10 @@ class ViewController: UIViewController {
     }
 
     @IBAction func didTapOnFlashcard(_ sender: Any) {
+       flipFlashcard()
+    }
+    
+    func flipFlashcard(){
         if frontLabel.isHidden == true
         {
             frontLabel.isHidden = false
