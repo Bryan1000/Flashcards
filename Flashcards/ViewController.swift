@@ -74,13 +74,15 @@ class ViewController: UIViewController {
     }
     
     func flipFlashcard(){
-        if frontLabel.isHidden == true
-        {
-            frontLabel.isHidden = false
-        }
-        else
-        {
-            frontLabel.isHidden = true
+        UIView.transition(with: card, duration: 0.3, options: .transitionFlipFromRight) {
+            if self.frontLabel.isHidden == true
+            {
+                self.frontLabel.isHidden = false
+            }
+            else
+            {
+                self.frontLabel.isHidden = true
+            }
         }
     }
     
@@ -125,17 +127,27 @@ class ViewController: UIViewController {
         //Increase current index
         currentIndex = currentIndex + 1
         
-        //Update labels
-        updateLabels()
-        
         //Update buttons
         updateNextPrevButtons()
+        
+        animateCardOut()
     }
     
     @IBAction func didTapOnPrev(_ sender: Any) {
         currentIndex = currentIndex - 1
-        updateLabels()
         updateNextPrevButtons()
+       
+        UIView .animate(withDuration: 0.3, animations: {
+            self.card.transform = CGAffineTransform.identity.translatedBy(x: 300.0, y: 0.0)
+        }, completion: { finished in
+            //Update labels
+            self.updateLabels()
+            
+            self.card.transform = CGAffineTransform.identity.translatedBy(x: -300.0, y: 0.0)
+            UIView.animate(withDuration: 0.3) {
+                self.card.transform = CGAffineTransform.identity
+            }
+        })
     }
     
     
@@ -184,22 +196,28 @@ class ViewController: UIViewController {
             flashcards.append(contentsOf: savedCards)
     }
     }
-   
     
-    /*
-    func readSavedFlashcards(){
-        //Read dictionary array from disk (if any)
-        if let dictionaryArray = UserDefaults.standard.array(forKey: "flashcards") as? [[String: String]]{
-            //In here we know for sure we have a dictionary array
-            let savedCards = dictionaryArray.map { dictionary -> Flashcard in
-                return Flashcard(question: dictionary["question"]!, answer: dictionary["answer"]!)
-            }
-            //Put all these cards in our flashcards array
-            flashcards.append(contentsOf: savedCards)
-            }
+    func animateCardOut(){
+        UIView .animate(withDuration: 0.3, animations: {
+            self.card.transform = CGAffineTransform.identity.translatedBy(x: -300.0, y: 0.0)
+        }, completion: { finished in
+            //Update labels
+            self.updateLabels()
             
+            //Run other animation
+            self.animateCardIn()
+        })
     }
-    */
+    
+    func animateCardIn(){
+        //Start on the right side (don't animat this)
+        card.transform = CGAffineTransform.identity.translatedBy(x: 300.0, y: 0.0)
+        
+        //Animate card going back to its original position
+        UIView.animate(withDuration: 0.3) {
+            self.card.transform = CGAffineTransform.identity
+        }
+    }
     
     //Override func prepare(for segue: UI )
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
